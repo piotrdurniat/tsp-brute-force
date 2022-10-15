@@ -18,6 +18,7 @@ namespace Tests
     // Checks if results are correct for all of the provided instances
     void testAlgorithm(std::vector<std::string> instances);
 
+    void testAlgorithm(GraphMatrix *graph, int startingVertex, int iterCount, unsigned long *resTime);
 };
 
 #endif

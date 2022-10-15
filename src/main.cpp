@@ -49,9 +49,8 @@ void singleInstanceTest()
 {
     const char *mode = "single_instance_test";
     const int startingVertex = 0;
-    Timer timer;
 
-    const int iterations = atoi(ini.GetValue(mode, "iterations", "1"));
+    const int iterCount = atoi(ini.GetValue(mode, "iterations", "1"));
     const std::string inputDir = ini.GetValue("common", "input_dir", "./instances");
     const std::string outputDir = ini.GetValue("common", "output_dir", "./results");
     const std::string inputFileName = ini.GetValue(mode, "instance", "UNKNOWN");
@@ -63,7 +62,7 @@ void singleInstanceTest()
     printf("Single instance test:\n\n");
     printf("Input file: %s\n", inputFilePath.c_str());
     printf("Output file: %s\n", outputFilePath.c_str());
-    printf("Number of iterations: %i\n\n", iterations);
+    printf("Number of iterations: %i\n\n", iterCount);
 
     GraphMatrix *graph = FileUtils::loadGraph(inputFilePath);
     if (graph == NULL)
@@ -74,12 +73,11 @@ void singleInstanceTest()
     printf("Graph read from file:\n");
     graph->display();
 
-    timer.start();
+    unsigned long averageTime;
 
-    bruteForceSearch(graph, startingVertex);
+    Tests::testAlgorithm(graph, startingVertex, iterCount, &averageTime);
 
-    const unsigned long elapsedTime = timer.getElapsedNs();
-    printf("Elapsed time [ns]: %lu\n", elapsedTime);
+    printf("Elapsed time [ns]: %lu\n", averageTime);
 }
 
 void multipleInstanceTest()

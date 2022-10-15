@@ -7,6 +7,23 @@
 #include "FileUtils.hpp"
 #include "printColor.hpp"
 
+void Tests::testAlgorithm(GraphMatrix *graph, int startingVertex, int iterCount, unsigned long *resTime)
+{
+    Timer timer;
+
+    unsigned long averageTime = 0;
+    for (int i = 0; i < iterCount; ++i)
+    {
+        timer.start();
+        bruteForceSearch(graph, startingVertex);
+        const unsigned long elapsedTime = timer.getElapsedNs();
+        // printf("%lu\n", elapsedTime);
+        averageTime += elapsedTime;
+    }
+    averageTime /= iterCount;
+    (*resTime) = averageTime;
+}
+
 void Tests::benchmarkAlgorithm(int minVerticesNum, int maxVerticesNum, int iterCount)
 {
     Timer timer;

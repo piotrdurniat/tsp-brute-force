@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <iostream>
 
-#define VERBOSE true
+#define VERBOSE false
 
 int bruteForceSearch(GraphMatrix *graph, int startingVertex)
 {
