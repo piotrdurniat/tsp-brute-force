@@ -5,7 +5,7 @@
 
 #define VERBOSE false
 
-int bruteForceSearch(GraphMatrix *graph, int startingVertex)
+Path bruteForceSearch(GraphMatrix *graph, int startingVertex)
 {
     const int graphSize = graph->getVertexCount();
     const int optimum = graph->getOptimum();
@@ -51,7 +51,10 @@ int bruteForceSearch(GraphMatrix *graph, int startingVertex)
         printImprovement(initialWeight, optimum);
         printPath(startingVertex, &shortestPath);
     }
-    return minWeight;
+
+    // Push back starting vertex to return the full path
+    shortestPath.push_back(startingVertex);
+    return Path(shortestPath, minWeight);
 }
 
 void printImprovement(int weight, int optimum)

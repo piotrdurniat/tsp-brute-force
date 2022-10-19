@@ -2,13 +2,27 @@
 #define BRUTE_FORCE_SEARCH_H
 #include "GraphMatrix.hpp"
 
+struct Path
+{
+    std::vector<int> vertices;
+    int weight;
+
+    Path() {}
+
+    Path(std::vector<int> vertices, int weight)
+    {
+        this->vertices = vertices;
+        this->weight = weight;
+    }
+};
+
 /**
  * @brief Finds the shortest Hamiltonian path in the graph
  *
  * @param graph Graph on which the algorithm operates
  * @param startingVertex Starting vertex of the path
  */
-int bruteForceSearch(GraphMatrix *graph, int startingVertex);
+Path bruteForceSearch(GraphMatrix *graph, int startingVertex);
 
 void printImprovement(int weight, int optimum);
 

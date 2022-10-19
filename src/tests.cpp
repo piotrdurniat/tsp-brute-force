@@ -6,38 +6,55 @@
 #include "graphGenerator.hpp"
 #include "FileUtils.hpp"
 #include "printColor.hpp"
+#include "TestResult.hpp"
 
-void Tests::testAlgorithm(GraphMatrix *graph, int startingVertex, int iterCount, unsigned long *resTime)
+void Tests::fileInstanceTest(GraphMatrix *graph, int iterCount, std::string instanceName, std::string outputPath, std::string outputPathAverage)
 {
+    FileUtils::writeInstanceTestHeader(outputPath);
+    const int startingVertex = 0;
     Timer timer;
+
+    Path path;
+    bool isCorrect;
 
     unsigned long averageTime = 0;
     for (int i = 0; i < iterCount; ++i)
     {
         timer.start();
-        bruteForceSearch(graph, startingVertex);
+        path = bruteForceSearch(graph, startingVertex);
         const unsigned long elapsedTime = timer.getElapsedNs();
-        // printf("%lu\n", elapsedTime);
         averageTime += elapsedTime;
+
+        isCorrect = path.weight == graph->optimum;
+
+        TestResult testResult(instanceName, elapsedTime, path, isCorrect);
+
+        FileUtils::appendTestResult(outputPath, testResult);
     }
     averageTime /= iterCount;
-    (*resTime) = averageTime;
+
+    TestResult resultAverage(instanceName, averageTime, path, isCorrect);
+
+    FileUtils::appendTestResult(outputPathAverage, resultAverage);
+
+    printf("Elapsed time [ns]: %lu\n", averageTime);
 }
 
-void Tests::benchmarkAlgorithm(int minVerticesNum, int maxVerticesNum, int iterCount)
+void Tests::randomInstanceTest(int minSize, int maxSize, int iterCount, std::string outputPath)
 {
+
+    FileUtils::writeRandomInstanceTestHeader(outputPath);
     Timer timer;
     GraphMatrix *graph;
     const int startingVertex = 0;
 
     srand(1);
-    printf("Num of vertices, time\n");
-    for (int verticesNum = minVerticesNum; verticesNum <= maxVerticesNum; verticesNum++)
+    for (int vertexCount = minSize; vertexCount <= maxSize; vertexCount++)
     {
         long unsigned averageTime = 0;
         for (int i = 0; i < iterCount; ++i)
         {
-            graph = graphGenerator::getRandom(verticesNum, 10);
+            graph = graphGenerator::getRandom(vertexCount, 10);
 
             timer.start();
             bruteForceSearch(graph, startingVertex);
@@ -47,8 +64,9 @@ void Tests::benchmarkAlgorithm(int minVerticesNum, int maxVerticesNum, int iterC
             graph = NULL;
         }
         averageTime /= iterCount;
-        printf("%i, %lu\n", verticesNum, averageTime);
+        FileUtils::appendRandomInstanceTestResult(outputPath, vertexCount, averageTime);
     }
+    printf("Done. Saved to file.\n");
 }
 
 void Tests::testAlgorithm(std::vector<std::string> instances)
@@ -60,8 +78,8 @@ void Tests::testAlgorithm(std::vector<std::string> instances)
 
         const int startingVertex = 0;
 
-        const int pathWeight = bruteForceSearch(graph, startingVertex);
-        const bool correctRes = pathWeight == graph->optimum;
+        Path path = bruteForceSearch(graph, startingVertex);
+        const bool correctRes = path.weight == graph->optimum;
 
         printf("%14s", instanceName.c_str());
 

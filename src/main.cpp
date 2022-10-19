@@ -24,18 +24,15 @@ int main(void)
 
     const std::string mode = ini.GetValue("common", "mode", "UNKNOWN");
 
-    if (mode == "single_instance_test")
+    if (mode == "file_instance_test")
     {
-        singleInstanceTest();
+        fileInstanceTest();
     }
-    else if (mode == "multiple_instances_test")
+    else if (mode == "random_instance_test")
     {
-        multipleInstanceTest();
+        randomInstanceTest();
     }
-    else if (mode == "time_test")
-    {
-        timeTest();
-    }
+
     else
     {
         printf("Wrong mode value.\n");
@@ -45,47 +42,60 @@ int main(void)
     return 0;
 }
 
-void singleInstanceTest()
+void fileInstanceTest()
 {
-    const char *mode = "single_instance_test";
-    const int startingVertex = 0;
-
-    const int iterCount = atoi(ini.GetValue(mode, "iterations", "1"));
     const std::string inputDir = ini.GetValue("common", "input_dir", "./instances");
     const std::string outputDir = ini.GetValue("common", "output_dir", "./results");
-    const std::string inputFileName = ini.GetValue(mode, "instance", "UNKNOWN");
-    const std::string outputFileName = ini.GetValue(mode, "output", "UNKNOWN");
 
-    const std::string inputFilePath = inputDir + "/" + inputFileName;
-    const std::string outputFilePath = outputDir + "/" + outputFileName;
+    const int instanceCount = atoi(ini.GetValue("file_instance_test", "number_of_instances", "1"));
+    const std::string agregatedOutputFile = ini.GetValue("file_instance_test", "agregated_output", "UNKNOWN");
+    const std::string agregatedOutputFilePath = outputDir + "/" + agregatedOutputFile;
 
-    printf("Single instance test:\n\n");
-    printf("Input file: %s\n", inputFilePath.c_str());
-    printf("Output file: %s\n", outputFilePath.c_str());
-    printf("Number of iterations: %i\n\n", iterCount);
-
-    GraphMatrix *graph = FileUtils::loadGraph(inputFilePath);
-    if (graph == NULL)
+    FileUtils::writeInstanceTestHeader(agregatedOutputFilePath);
+    for (int i = 0; i < instanceCount; i++)
     {
-        printf("File not found.\n");
-        return;
+        const char *instanceTag = ("instance_" + std::to_string(i)).c_str();
+        printf("\n%s:\n", instanceTag);
+
+        const std::string instanceName = ini.GetValue(instanceTag, "instance", "UNKNOWN");
+        const std::string outputFile = ini.GetValue(instanceTag, "output", "UNKNOWN");
+        const int iterCount = atoi(ini.GetValue(instanceTag, "iterations", "1"));
+
+        const std::string inputFilePath = inputDir + "/" + instanceName;
+        const std::string outputFilePath = outputDir + "/" + outputFile;
+
+        printf("Input: %s\n", inputFilePath.c_str());
+        printf("Output: %s\n", outputFilePath.c_str());
+        printf("Iteration count: %i\n\n", iterCount);
+
+        GraphMatrix *graph = FileUtils::loadGraph(inputFilePath);
+        if (graph == NULL)
+        {
+            printf("File not found.\n");
+            return;
+        }
+        printf("Graph read from file:\n");
+        graph->display();
+
+        Tests::fileInstanceTest(graph, iterCount, instanceName, outputFilePath, agregatedOutputFilePath);
+
+        printf("Finished.\n");
+        printf("Results saved to file.\n");
     }
-    printf("Graph read from file:\n");
-    graph->display();
-
-    unsigned long averageTime;
-
-    Tests::testAlgorithm(graph, startingVertex, iterCount, &averageTime);
-
-    printf("Elapsed time [ns]: %lu\n", averageTime);
 }
 
-void multipleInstanceTest()
+void randomInstanceTest()
 {
-    printf("Multiple instances test\n");
-}
+    printf("Random instance test\n\n");
 
-void timeTest()
-{
-    printf("Time test\n");
+    const std::string outputDir = ini.GetValue("common", "output_dir", "./results");
+
+    const char *iniSection = "random_instance_test";
+    const int minSize = atoi(ini.GetValue(iniSection, "min_size", "1"));
+    const int maxSize = atoi(ini.GetValue(iniSection, "max_size", "1"));
+    const int iterations = atoi(ini.GetValue(iniSection, "iterations", "1"));
+    const std::string outputFile = ini.GetValue(iniSection, "output", "UNKNOWN");
+    const std::string outputFilePath = outputDir + "/" + outputFile;
+
+    Tests::randomInstanceTest(minSize, maxSize, iterations, outputFilePath);
 }

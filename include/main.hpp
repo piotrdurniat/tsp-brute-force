@@ -4,8 +4,8 @@ CSimpleIniA ini;
 
 int main(void);
 
-void singleInstanceTest();
+void fileInstanceTest();
 
-void multipleInstanceTest();
+void randomInstanceTest();
 
 void timeTest();
