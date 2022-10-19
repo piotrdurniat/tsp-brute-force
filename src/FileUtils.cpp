@@ -43,7 +43,7 @@ void FileUtils::writeInstanceTestHeader(std::string filePath)
     if (!fout)
         return;
 
-    fout << "instance, execution time [ns], path weight, path, is correct\n";
+    fout << "instance, execution time [ns], path, path weight, is correct\n";
     fout.close();
 }
 
