@@ -48,10 +48,7 @@ void fileInstanceTest()
     const std::string outputDir = ini.GetValue("common", "output_dir", "./results");
 
     const int instanceCount = atoi(ini.GetValue("file_instance_test", "number_of_instances", "1"));
-    const std::string agregatedOutputFile = ini.GetValue("file_instance_test", "agregated_output", "UNKNOWN");
-    const std::string agregatedOutputFilePath = outputDir + "/" + agregatedOutputFile;
 
-    FileUtils::writeInstanceTestHeader(agregatedOutputFilePath);
     for (int i = 0; i < instanceCount; i++)
     {
         const char *instanceTag = ("instance_" + std::to_string(i)).c_str();
@@ -68,6 +65,7 @@ void fileInstanceTest()
         printf("Output: %s\n", outputFilePath.c_str());
         printf("Iteration count: %i\n\n", iterCount);
 
+        // Wczytanie grafu
         GraphMatrix *graph = FileUtils::loadGraph(inputFilePath);
         if (graph == NULL)
         {
@@ -77,7 +75,7 @@ void fileInstanceTest()
         printf("Graph read from file:\n");
         graph->display();
 
-        Tests::fileInstanceTest(graph, iterCount, instanceName, outputFilePath, agregatedOutputFilePath);
+        Tests::fileInstanceTest(graph, iterCount, instanceName, outputFilePath);
 
         printf("Finished.\n");
         printf("Results saved to file.\n");

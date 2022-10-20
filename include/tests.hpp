@@ -25,9 +25,8 @@ namespace Tests
      * @param iterCount Number of test repetitions
      * @param instanceName Name of the tested instance
      * @param outputPath Path of the results file for single instance test
-     * @param outputPathAverage Path of the result file for agregated results with average file
      **/
-    void fileInstanceTest(GraphMatrix *graph, int iterCount, std::string instanceName, std::string outputPath, std::string outputPathAverage);
+    void fileInstanceTest(GraphMatrix *graph, int iterCount, std::string instanceName, std::string outputPath);
 };
 
 #endif

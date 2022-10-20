@@ -9,13 +9,11 @@ Path bruteForceSearch(GraphMatrix *graph, int startingVertex)
 {
     const int graphSize = graph->getVertexCount();
     const int optimum = graph->getOptimum();
-
-    // Vector for holding the shortest path:
     std::vector<int> shortestPath;
 
-    // Create an initial path of every vertex except the starting one
+    // Utworzenie tablicy path składającej się z pozostałych wierzchołków grafu
+    // w kolejności naturalnej.
     std::vector<int> path;
-
     for (int i = 0; i < graphSize; ++i)
     {
         if (i != startingVertex)
@@ -25,18 +23,26 @@ Path bruteForceSearch(GraphMatrix *graph, int startingVertex)
     }
 
     const int pathSize = path.size();
-    const int initialWeight = getPathWeight(graph, path, pathSize, startingVertex);
-    int minWeight = initialWeight;
+    // Przypisanie weight := waga cyklu wychodzącego z wierzchołka początkowego
+    // i przechodzącego przez wierzchołki tablicy path
+    const int weight = getPathWeight(graph, path, pathSize, startingVertex);
+    // Przypisanie minWeight = wieght
+    int minWeight = weight;
     if (VERBOSE)
     {
-        printImprovement(initialWeight, optimum);
+        printImprovement(weight, optimum);
     }
 
+    // Wygenerowanie kolejnej permutacji tablicy path.
+    // Jeżeli nie ma kolejnej permutacji, wyjście z pętli - koniec
     while (std::next_permutation(path.begin(), path.end()))
     {
+        // Przypisanie weight := waga cyklu wychodzącego z wierzchołka początkowego
+        // i przechodzącego przez wierzchołki tablicy path
         const int weight = getPathWeight(graph, path, pathSize, startingVertex);
         if (weight < minWeight)
         {
+            // Przypisanie minWeight := weight
             minWeight = weight;
             shortestPath = path;
             if (VERBOSE)
@@ -48,11 +54,11 @@ Path bruteForceSearch(GraphMatrix *graph, int startingVertex)
 
     if (VERBOSE)
     {
-        printImprovement(initialWeight, optimum);
+        printImprovement(weight, optimum);
         printPath(startingVertex, &shortestPath);
     }
 
-    // Push back starting vertex to return the full path
+    // Do tablicy dodany jest wierzchołek początkowy, aby zwrócić całą ścieżkę
     shortestPath.push_back(startingVertex);
     return Path(shortestPath, minWeight);
 }

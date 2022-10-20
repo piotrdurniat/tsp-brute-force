@@ -8,36 +8,25 @@
 #include "printColor.hpp"
 #include "TestResult.hpp"
 
-void Tests::fileInstanceTest(GraphMatrix *graph, int iterCount, std::string instanceName, std::string outputPath, std::string outputPathAverage)
+void Tests::fileInstanceTest(GraphMatrix *graph, int iterCount, std::string instanceName, std::string outputPath)
 {
     FileUtils::writeInstanceTestHeader(outputPath);
+    // Wybór jednego z wierzchołków grafu jako wierzchołek początkowy.
     const int startingVertex = 0;
     Timer timer;
 
-    Path path;
-    bool isCorrect;
-
-    unsigned long averageTime = 0;
     for (int i = 0; i < iterCount; ++i)
     {
         timer.start();
-        path = bruteForceSearch(graph, startingVertex);
+        Path path = bruteForceSearch(graph, startingVertex);
         const unsigned long elapsedTime = timer.getElapsedNs();
-        averageTime += elapsedTime;
 
-        isCorrect = path.weight == graph->optimum;
+        bool isCorrect = path.weight == graph->optimum;
 
         TestResult testResult(instanceName, elapsedTime, path, isCorrect);
 
         FileUtils::appendTestResult(outputPath, testResult);
     }
-    averageTime /= iterCount;
-
-    TestResult resultAverage(instanceName, averageTime, path, isCorrect);
-
-    FileUtils::appendTestResult(outputPathAverage, resultAverage);
-
-    printf("Elapsed time [ns]: %lu\n", averageTime);
 }
 
 void Tests::randomInstanceTest(int minSize, int maxSize, int iterCount, std::string outputPath)
