@@ -65,7 +65,6 @@ void fileInstanceTest()
         printf("Output: %s\n", outputFilePath.c_str());
         printf("Iteration count: %i\n\n", iterCount);
 
-        // Wczytanie grafu
         GraphMatrix *graph = FileUtils::loadGraph(inputFilePath);
         if (graph == NULL)
         {

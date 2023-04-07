@@ -11,7 +11,6 @@
 void Tests::fileInstanceTest(GraphMatrix *graph, int iterCount, std::string instanceName, std::string outputPath)
 {
     FileUtils::writeInstanceTestHeader(outputPath);
-    // Wybór jednego z wierzchołków grafu jako wierzchołek początkowy.
     const int startingVertex = 0;
     Timer timer;
 

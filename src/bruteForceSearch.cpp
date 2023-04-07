@@ -11,8 +11,6 @@ Path bruteForceSearch(GraphMatrix *graph, int startingVertex)
     const int optimum = graph->getOptimum();
     std::vector<int> shortestPath;
 
-    // Utworzenie tablicy path składającej się z pozostałych wierzchołków grafu
-    // w kolejności naturalnej.
     std::vector<int> path;
     for (int i = 0; i < graphSize; ++i)
     {
@@ -23,26 +21,18 @@ Path bruteForceSearch(GraphMatrix *graph, int startingVertex)
     }
 
     const int pathSize = path.size();
-    // Przypisanie weight := waga cyklu wychodzącego z wierzchołka początkowego
-    // i przechodzącego przez wierzchołki tablicy path
     const int weight = getPathWeight(graph, path, pathSize, startingVertex);
-    // Przypisanie minWeight = wieght
     int minWeight = weight;
     if (VERBOSE)
     {
         printImprovement(weight, optimum);
     }
 
-    // Wygenerowanie kolejnej permutacji tablicy path.
-    // Jeżeli nie ma kolejnej permutacji, wyjście z pętli - koniec
     while (std::next_permutation(path.begin(), path.end()))
     {
-        // Przypisanie weight := waga cyklu wychodzącego z wierzchołka początkowego
-        // i przechodzącego przez wierzchołki tablicy path
         const int weight = getPathWeight(graph, path, pathSize, startingVertex);
         if (weight < minWeight)
         {
-            // Przypisanie minWeight := weight
             minWeight = weight;
             shortestPath = path;
             if (VERBOSE)
@@ -58,7 +48,6 @@ Path bruteForceSearch(GraphMatrix *graph, int startingVertex)
         printPath(startingVertex, &shortestPath);
     }
 
-    // Do tablicy dodany jest wierzchołek początkowy, aby zwrócić całą ścieżkę
     shortestPath.push_back(startingVertex);
     return Path(shortestPath, minWeight);
 }
